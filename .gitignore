@@ -1,2 +1,20 @@
+# Maven output
 /target/
-hs_err_pid*.log
+
+# Compiled Java classes
+*.class
+
+# JVM crash dumps and logs
+hs_err_pid*
+replay_pid*
+*.log
+
+# IDE build output and project metadata
+/bin/
+.idea/
+*.iml
+.vscode/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
