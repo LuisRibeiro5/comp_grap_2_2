@@ -1,0 +1,19 @@
+#version 330 core
+
+in vec3 positionA;
+in vec3 positionB;
+in vec2 textuv;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform float blend;
+
+out vec2 uv;
+
+void main(void) {
+	// A GPU interpola a posicao entre os dois frames da animacao.
+	vec3 position = mix(positionA, positionB, blend);
+	gl_Position = projection * view * model * vec4(position, 1.0);
+	uv = textuv;
+}
