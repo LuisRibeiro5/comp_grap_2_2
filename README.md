@@ -1,32 +1,18 @@
-# OpenGL 06 - Shaders e modelos MD2
+# Projetos de Computacao Grafica
 
-Projeto didatico Java/LWJGL para carregar modelos OBJ e MD2 e desenha-los com shaders.
+Este repositorio contem dois projetos independentes:
 
-## Compilar
+- [`opengl06/`](./opengl06/): shaders e carregamento/renderizacao de modelos,
+  incluindo o exemplo MD2.
+- [`opengl07_movimentacao/`](./opengl07_movimentacao/): projeto separado de
+  movimentacao.
 
-Requer Java 8 ou superior e Maven:
+Cada pasta tem seu proprio `pom.xml`. Para compilar um projeto, entre na pasta
+correspondente e execute:
 
 ```sh
 mvn package
 ```
 
-## Executar um modelo MD2
-
-No Eclipse, execute a classe `Main3D` com estes argumentos:
-
-```text
-caminho/modelo.md2 caminho/skin.png
-```
-
-O segundo argumento e opcional; sem ele, o programa tenta usar `texturaGato.jpeg`.
-O arquivo MD2 contem a geometria animada, enquanto a skin e uma imagem separada.
-Sem argumentos, o programa segue o exemplo OBJ original.
-
-W/S e A/D giram a cena, Z/X alteram o zoom e Escape fecha a janela.
-
-## Como funciona a interpolacao
-
-O carregador le os triangulos, coordenadas UV e vertices compactados de cada frame
-MD2. Para cada triangulo, ele prepara dois buffers de vertices (frame atual e
-seguinte). O vertex shader mistura essas posicoes usando `blend`; assim a GPU
-faz a interpolacao entre os frames antes da projecao e renderizacao.
+O Git e compartilhado na raiz deste repositorio; os projetos continuam separados
+por diretorio e podem evoluir de forma independente.

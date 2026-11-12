@@ -1,5 +1,5 @@
-# Maven output
-/target/
+# Maven output in either project
+**/target/
 
 # Compiled Java classes
 *.class
@@ -10,7 +10,7 @@ replay_pid*
 *.log
 
 # IDE build output and project metadata
-/bin/
+**/bin/
 .idea/
 *.iml
 .vscode/
