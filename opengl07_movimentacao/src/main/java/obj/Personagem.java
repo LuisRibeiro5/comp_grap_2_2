@@ -33,6 +33,8 @@ public class Personagem extends Object3D {
 	public boolean DOWN = false;
 	public boolean LEFT = false;
 	public boolean RIGHT = false;
+	public boolean SUBIR = false;
+	public boolean DESCER = false;
 	public boolean SHOOT = false;
 	
 	float velocidade = 5;
@@ -91,6 +93,14 @@ public class Personagem extends Object3D {
 		}
 		if(RIGHT) {
 			x += velocidade*diftime/1000.0f;
+		}
+
+		// O eixo Y controla a altura da nave: positivo sobe e negativo desce.
+		if (SUBIR) {
+			y += velocidade * diftime / 1000.0f;
+		}
+		if (DESCER) {
+			y -= velocidade * diftime / 1000.0f;
 		}
 		
 		tirotimer+=diftime;

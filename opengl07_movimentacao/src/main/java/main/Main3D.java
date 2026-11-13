@@ -118,6 +118,12 @@ public class Main3D {
 					//viewAngY-=5;
 					personagem.RIGHT = true;
 				}
+				if (key == GLFW_KEY_E) {
+					personagem.SUBIR = true;
+				}
+				if (key == GLFW_KEY_Q) {
+					personagem.DESCER = true;
+				}
 				if ( key == GLFW_KEY_SPACE) {
 					//viewAngY-=5;
 					personagem.SHOOT = true;
@@ -148,6 +154,12 @@ public class Main3D {
 				if ( key == GLFW_KEY_D) {
 					//viewAngY-=5;
 					personagem.RIGHT = false;
+				}
+				if (key == GLFW_KEY_E) {
+					personagem.SUBIR = false;
+				}
+				if (key == GLFW_KEY_Q) {
+					personagem.DESCER = false;
 				}
 				
 				if ( key == GLFW_KEY_Z) {
@@ -212,14 +224,14 @@ public class Main3D {
 		
 		System.out.println("f104starfighter.obj");
 		ObjModel f101 = new ObjModel();
-		f101.loadObj("..\\objs\\x-35_obj.obj");
+		f101.loadObj("x-35_obj.obj");
 		f101.load();
 		System.out.println("Faces: "+f101.f.size());
 		
 		System.out.println("AIM120D");
 		ObjModel sr71 = new ObjModel();
 		//sr71.loadObj("..\\OBJ\\SR71.obj");
-		sr71.loadObj("..\\objs\\SR71.obj");
+		sr71.loadObj("tank.obj");
 		sr71.load();
 		System.out.println("Faces: "+sr71.f.size());
 		
@@ -285,10 +297,31 @@ public class Main3D {
 				
 			}
 			
-			for(int i = 0; i < listaObjetos.size();i++) {
-				listaObjetos.get(i).SimulaSe(diftime);
+			for (int i = listaObjetos.size() - 1; i >= 0; i--) {
+				Object3D objeto = listaObjetos.get(i);
+				objeto.SimulaSe(diftime);
+
+				// O cubo so sai da cena depois de terminar a animacao de explosao.
+				if (objeto instanceof Cubo3D && !((Cubo3D) objeto).vivo) {
+					listaObjetos.remove(i);
+				}
 			}
 			personagem.SimulaSe(diftime);
+
+			// Testa cada projetil contra os cubos; um impacto consome o tiro.
+			for (int i = listaProjeteis.size() - 1; i >= 0; i--) {
+				Projetil projetil = (Projetil) listaProjeteis.get(i);
+
+				for (int j = listaObjetos.size() - 1; j >= 0; j--) {
+					Object3D objeto = listaObjetos.get(j);
+					if (objeto instanceof Cubo3D && ((Cubo3D) objeto).colideCom(projetil)) {
+						// O tiro some e o cubo inicia a animacao; ele sera removido ao terminar.
+						listaProjeteis.remove(i);
+						((Cubo3D) objeto).explodir();
+						break;
+					}
+				}
+			}
 			
 			angle+=0.1;
 			

@@ -6,7 +6,7 @@
   <name>Opengl06_SHADERS</name>
   <properties>
 	<lwjgl.version>3.3.3</lwjgl.version>
-	<lwjgl.natives>natives-windows</lwjgl.natives>
+	<lwjgl.natives>natives-linux</lwjgl.natives>
 	<maven.compiler.source>8</maven.compiler.source>
 	<maven.compiler.target>8</maven.compiler.target>
   </properties>
@@ -85,4 +85,17 @@
 		</dependency>
 
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<mainClass>Main3D</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

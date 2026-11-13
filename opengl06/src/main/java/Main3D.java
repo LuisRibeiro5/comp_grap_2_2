@@ -7,11 +7,8 @@ import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import Model.VboCube;
 import Model.Md2Model;
-import obj.Cubo3D;
 import obj.ObjModel;
-import obj.Object3D;
 import shaders.Md2Shader;
 import shaders.StaticShader;
 import util.TextureLoader;
@@ -22,8 +19,6 @@ import java.io.IOException;
 //import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl;
 
 import java.nio.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -47,11 +42,7 @@ public class Main3D {
 	float viewAngY = 0;
 	float scale = 1.0f;
 	
-	public Random rnd = new Random();
-	
-	VboCube vboc;
 	StaticShader shader;
-	ArrayList<Object3D> listaObjetos = new ArrayList<>();
 	
 
 	public void run(String[] args) throws IOException {
@@ -222,7 +213,7 @@ public class Main3D {
 		glfwShowWindow(window);
 	}
 
-	private void loop() {
+	private void loop() throws IOException {
 		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
@@ -233,52 +224,18 @@ public class Main3D {
 
 		
 		
-		BufferedImage imggato = TextureLoader.loadImage("texturaGato.jpeg");
-		
-		vboc = new VboCube();
-		vboc.load();
 		shader = new StaticShader();
-		
-		//Cubo3D cubo = new Cubo3D(0.0f, 0.0f, -1.0f, 0.2f);
-		//cubo.vbocube = vboc;
-		
-		//ObjModel x35 = new ObjModel();
-		//x35.loadObj("x-35_obj.obj");
-		//x35.load();
-		
-		System.out.println("f104starfighter.obj");
-		ObjModel f101 = new ObjModel();
-		f101.loadObj("..\\objs\\x-35_obj.obj");
-		f101.load();
-		System.out.println("Faces: "+f101.f.size());
-		
-		System.out.println("AIM120D");
-		ObjModel sr71 = new ObjModel();
-		//sr71.loadObj("..\\OBJ\\SR71.obj");
-		sr71.loadObj("..\\objs\\SR71.obj");
-		sr71.load();
-		System.out.println("Faces: "+sr71.f.size());
-		
-		for(int i = 0; i < 100; i++) {
-			//Cubo3D cubo = new Cubo3D(rnd.nextFloat()*2-1,rnd.nextFloat()*2-1, rnd.nextFloat()*2-1, rnd.nextFloat()*0.005f+0.0001f);
-			//cubo.model = x35;
-			Cubo3D cubo = new Cubo3D(rnd.nextFloat()*2-1,rnd.nextFloat()*2-1, rnd.nextFloat()*2-1, rnd.nextFloat()*0.0005f+0.004f);
-			cubo.model = sr71;
-			cubo.vx = rnd.nextFloat()*0.4f-0.2f;
-			cubo.vy = rnd.nextFloat()*0.4f-0.2f;
-			cubo.vz = rnd.nextFloat()*0.4f-0.2f;
-			cubo.rotvel = rnd.nextFloat()*9;
-			listaObjetos.add(cubo);
+		// Neste projeto mostramos apenas o jatinho, sem os objetos de exemplo extras.
+		ObjModel jatinho = new ObjModel();
+		jatinho.loadObj("x-35_obj.obj");
+		jatinho.load();
+		System.out.println("Faces do jatinho: " + jatinho.f.size());
+
+		BufferedImage texturaJatinho = TextureLoader.loadImage("x-35_obj.jpg");
+		if (texturaJatinho == null) {
+			throw new IOException("Nao foi possivel carregar a textura x-35_obj.jpg.");
 		}
-		
-		BufferedImage gatorgba = new BufferedImage(imggato.getWidth(), imggato.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		gatorgba.getGraphics().drawImage(imggato, 0, 0, null);
-		int tgato = TextureLoader.loadTexture(imggato);
-		System.out.println("tgato "+tgato);
-		
-		
-		// Run the rendering loop until the user has attempted to close
-		// the window or has pressed the ESCAPE key.
+		int textura = TextureLoader.loadTexture(texturaJatinho);
 
 		int frame = 0;
 		long lasttime = System.currentTimeMillis();
@@ -292,16 +249,8 @@ public class Main3D {
 		glLoadIdentity();
 		
 		FloatBuffer matrixBuffer = MemoryUtil.memAllocFloat(16);
-		long ultimoTempo = System.currentTimeMillis();
 		while (!glfwWindowShouldClose(window)) {
-			
-			long diftime = System.currentTimeMillis()-ultimoTempo;
-			ultimoTempo = System.currentTimeMillis();
-			
-			for(int i = 0; i < listaObjetos.size();i++) {
-				listaObjetos.get(i).SimulaSe(diftime);
-			}
-			
+
 			angle+=0.1;
 			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
@@ -332,7 +281,7 @@ public class Main3D {
 			glEnable(GL_DEPTH_TEST);
 			
 	        glActiveTexture(GL_TEXTURE0);
-	        glBindTexture(GL_TEXTURE_2D, tgato);
+	        glBindTexture(GL_TEXTURE_2D, textura);
 	        
 	        int loctexture = glGetUniformLocation(shader.programID, "tex");
 	        glUniform1i(loctexture, 0);
@@ -351,13 +300,6 @@ public class Main3D {
 			
 			glUniform4f(corgeralloc, .5f, .5f, .5f, 1.0f);
 			glUniform1f(angpos, angle);
-			
-			Matrix4f modelmS = new Matrix4f();
-			modelmS.setIdentity();
-			
-			for(int i = 0; i < listaObjetos.size();i++) {
-				listaObjetos.get(i).DesenhaSe(shader);
-			}
 			
 			Matrix4f modelm = new Matrix4f();
 			modelm.setIdentity();
@@ -381,7 +323,7 @@ public class Main3D {
 			glUniform4f(corgeralloc, .5f, 0.8f, 0.5f, 1.0f);
 			
 			
-			f101.draw();
+			jatinho.draw();
 			
 			
 			shader.stop();
